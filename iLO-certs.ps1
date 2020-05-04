@@ -1,8 +1,15 @@
-$username=iLOUser
-$password=ConvertTo-SecureString -string "iLOPassword" -AsPlainText -Force
-$credential=New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $username,$password
-$connection=Connect-HPEiLO -Credential $credential -IP fqdn.domain.local -DisableCertificateAuthentication
-Start-HPEiLOCertificateSigningRequest -Connection $connection -City CITY -CommonName fqdn-ilo.domain.local -Country CO -Organization "ORG" -State STATE -OrganizationalUnit ORGUNIT
+$username = Read-Host -Prompt 'Input username'
+$password = Read-Host -AsSecureString 'Input password
+$IP = Read-Host -Prompt 'Input hostname of iLO'
+$city = Read-Host -Prompt 'Input City'
+$country = Read-Host -Prompt 'Input Country'
+$organization = Read-Host -Prompt 'Input Organization Name'
+$orgunit = Read-Host -Prompt 'Input Organizational Unit'
+$state = Read-Host -Prompt 'Input State'
+
+$credential = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $username,$password
+$connection = Connect-HPEiLO -Credential $credential -IP $IP -DisableCertificateAuthentication
+Start-HPEiLOCertificateSigningRequest -Connection $connection -City $city -CommonName $IP -Country $country -Organization $organization -State $state -OrganizationalUnit $orgunit
 Get-HPEiLOCertificateSigningRequest -connection $connection
 
 .\certreq.exe -submit -attrib "CertificateTemplate:Webserver" c:\temp\fqdn.csr c:\temp\fqdn.pem
